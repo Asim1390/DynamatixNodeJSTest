@@ -1,8 +1,27 @@
+/**
+ * Mongoose model for the Claims collection.
+ * @module Claims
+ * @requires mongoose
+ * @requires xlsx
+ * @requires ../Src/Features/DataTransfer/data.schema
+ * @requires ../config/mongooseConfig
+ */
+
 import mongoose from 'mongoose';
 import xlsx from 'xlsx';
 import Claims from '../Src/Features/DataTransfer/data.schema.js';
 import { connectUsingMongoose } from '../config/mongooseConfig.js';
 
+/**
+ * Reads an Excel file and converts it to JSON.
+ * @function readExcelFile
+ * @param {string} filePath - The path to the Excel file.
+ * @returns {Array<Object>} An array of objects representing the rows in the Excel sheet.
+ * @example
+ * // Example usage:
+ * const excelData = readExcelFile('path/to/file.xlsx');
+ * console.log(excelData); // Output: [{ CompanyReference: 'REF123', PolicyNumber: 'POL123', ... }, ...]
+ */
 const readExcelFile = (filePath) => {
   const workbook = xlsx.readFile(filePath);
   const sheetName = workbook.SheetNames[0];
@@ -10,6 +29,16 @@ const readExcelFile = (filePath) => {
   return xlsx.utils.sheet_to_json(worksheet);
 };
 
+/**
+ * Maps Excel data to the Claims schema structure.
+ * @function mapExcelDataToSchema
+ * @param {Array<Object>} excelData - The data read from the Excel file.
+ * @returns {Array<Object>} An array of objects formatted according to the Claims schema.
+ * @example
+ * // Example usage:
+ * const mappedData = mapExcelDataToSchema(excelData);
+ * console.log(mappedData); // Output: [{ companyReference: 'REF123', policyNumber: 'POL123', ... }, ...]
+ */
 const mapExcelDataToSchema = (excelData) => {
   return excelData.map((row) => ({
     companyReference: row.CompanyReference,
@@ -168,7 +197,17 @@ const mapExcelDataToSchema = (excelData) => {
   }));
 };
 
-
+/**
+ * Script to import data from an Excel file into the MongoDB database.
+ * @function DataScript
+ * @async
+ * @returns {Promise<void>} Resolves when the data import is complete.
+ * @throws {Error} If there is an error during the data import process.
+ * @example
+ * // Example usage:
+ * await DataScript();
+ * // Output: 'Data imported successfully' or 'Error importing data: ...'
+ */
 const DataScript = async () => {
   try {
     await connectUsingMongoose();
