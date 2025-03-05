@@ -1,6 +1,6 @@
 /**
  * Mongoose model for the Claims collection.
- * @module Claims
+ * @module ClaimsController
  * @requires ./data.schema
  */
 

@@ -1,6 +1,6 @@
 /**
  * Mongoose model for the Claims collection.
- * @module Claims
+ * @module Script
  * @requires mongoose
  * @requires xlsx
  * @requires ../Src/Features/DataTransfer/data.schema
