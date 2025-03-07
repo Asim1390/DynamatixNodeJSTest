@@ -1,0 +1,67 @@
+@startuml
+!define RECTANGLE class
+
+RECTANGLE "mongoose" as Mongoose {
+  + connect(url: string, options: object): Promise<void>
+  + disconnect(): Promise<void>
+}
+
+RECTANGLE "ClaimsSchema" as ClaimsSchema {
+  + companyReference: String
+  + policyNumber: String
+  + partnerRef: String
+  + incidentDetails: Object
+  + vehicleDetails: Object
+  + thirdPartyDetails: Object
+  + driverDetails: Object
+  + repairerDetails: Object
+  + salvageDetails: Object
+  + financialDetails: Object
+  + statusDetails: Object
+  + timestamps: Object
+  + notes: Object
+}
+
+RECTANGLE "Claims" as Claims {
+  + insertMany(data: Array<Object>): Promise<void>
+  + find(): Promise<Array<Object>>
+  + findById(id: string): Promise<Object>
+}
+
+RECTANGLE "DataScript" as DataScript {
+  + connectUsingMongoose(): Promise<void>
+  + readExcelFile(filePath: string): Array<Object>
+  + mapExcelDataToSchema(excelData: Array<Object>): Array<Object>
+  + execute(): Promise<void>
+}
+
+RECTANGLE "ExpressServer" as ExpressServer {
+  + app: Express
+  + use(middleware: Function): void
+  + listen(port: number, callback: Function): void
+}
+
+RECTANGLE "dataRoutes" as DataRoutes {
+  + getClaims(req: Request, res: Response): void
+  + getClaimById(req: Request, res: Response): void
+}
+
+RECTANGLE "dataController" as DataController {
+  + getClaims(req: Request, res: Response): void
+  + getClaimById(req: Request, res: Response): void
+}
+
+RECTANGLE "mongooseConfig" as MongooseConfig {
+  + connectUsingMongoose(): Promise<void>
+}
+
+MongooseConfig --> Mongoose : uses
+DataScript --> MongooseConfig : uses
+DataScript --> Claims : uses
+DataScript --> "xlsx" : uses
+ExpressServer --> DataRoutes : uses
+DataRoutes --> DataController : uses
+DataController --> Claims : uses
+Claims --> ClaimsSchema : uses
+
+@enduml
